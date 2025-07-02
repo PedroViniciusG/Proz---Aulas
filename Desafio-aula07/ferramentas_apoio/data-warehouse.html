@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Warehouse - Armazém de Dados</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2980b9;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: var(--dark);
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: var(--dark);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .schema {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .schema-table {
+            background-color: var(--light);
+            padding: 15px;
+            border-radius: 6px;
+            position: relative;
+            padding-left: 40px;
+        }
+        .schema-table::before {
+            content: 'T';
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .schema-table h3 {
+            margin: 0 0 10px 0;
+            color: var(--dark);
+        }
+        .schema-columns {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .column {
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+        }
+        .column::before {
+            content: '•';
+            margin-right: 5px;
+            color: var(--primary);
+        }
+        .etl-process {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        .etl-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+        .etl-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.5em;
+        }
+        .etl-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.5em;
+        }
+        .etl-name {
+            font-weight: bold;
+        }
+        .data-flow {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .flow-diagram {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .flow-source, .flow-target {
+            width: 120px;
+            text-align: center;
+        }
+        .flow-source img, .flow-target img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .flow-arrow {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: var(--primary);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        .kpi {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M1 13H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 3V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Data Warehouse - Armazém de Dados Corporativos
+            </h1>
+        </header>
+        
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">Volume de Dados</div>
+                <div class="kpi">15.7 TB</div>
+                <div style="text-align: center;">+2.1 TB no último mês</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Tabelas Armazenadas</div>
+                <div class="kpi">428</div>
+                <div style="text-align: center;">12 esquemas diferentes</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Atualização</div>
+                <div class="kpi">Diária</div>
+                <div style="text-align: center;">Última: Hoje 02:00</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">Modelo Dimensional (Star Schema)</div>
+            <div class="schema">
+                <div class="schema-table">
+                    <h3>FATO_VENDAS</h3>
+                    <div class="schema-columns">
+                        <div class="column">id_venda (PK)</div>
+                        <div class="column">id_cliente (FK)</div>
+                        <div class="column">id_produto (FK)</div>
+                        <div class="column">id_tempo (FK)</div>
+                        <div class="column">quantidade</div>
+                        <div class="column">valor_total</div>
+                        <div class="column">desconto</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <div class="schema-table" style="flex: 1;">
+                        <h3>DIM_CLIENTE</h3>
+                        <div class="schema-columns">
+                            <div class="column">id_cliente (PK)</div>
+                            <div class="column">nome</div>
+                            <div class="column">cidade</div>
+                            <div class="column">estado</div>
+                            <div class="column">segmento</div>
+                        </div>
+                    </div>
+                    
+                    <div class="schema-table" style="flex: 1;">
+                        <h3>DIM_PRODUTO</h3>
+                        <div class="schema-columns">
+                            <div class="column">id_produto (PK)</div>
+                            <div class="column">nome</div>
+                            <div class="column">categoria</div>
+                            <div class="column">preco</div>
+                        </div>
+                    </div>
+                    
+                    <div class="schema-table" style="flex: 1;">
+                        <h3>DIM_TEMPO</h3>
+                        <div class="schema-columns">
+                            <div class="column">id_tempo (PK)</div>
+                            <div class="column">data</div>
+                            <div class="column">dia_semana</div>
+                            <div class="column">mes</div>
+                            <div class="column">trimestre</div>
+                            <div class="column">ano</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">Processo ETL (Extract, Transform, Load)</div>
+            
+            <div class="etl-process">
+                <div class="etl-step">
+                    <div class="etl-icon">E</div>
+                    <div class="etl-name">Extração</div>
+                    <div>Dados de sistemas transacionais</div>
+                </div>
+                <div class="etl-step">
+                    <div class="etl-icon">T</div>
+                    <div class="etl-name">Transformação</div>
+                    <div>Limpeza e padronização</div>
+                </div>
+                <div class="etl-step">
+                    <div class="etl-icon">L</div>
+                    <div class="etl-name">Carga</div>
+                    <div>Armazenamento no DW</div>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fonte de Dados</th>
+                        <th>Tipo</th>
+                        <th>Frequência</th>
+                        <th>Última Carga</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sistema de Vendas</td>
+                        <td>Transacional</td>
+                        <td>Diária</td>
+                        <td>24/06/2023 02:15</td>
+                        <td><span style="color: green;">✔ Sucesso</span></td>
+                    </tr>
+                    <tr>
+                        <td>ERP Financeiro</td>
+                        <td>Transacional</td>
+                        <td>Diária</td>
+                        <td>24/06/2023 03:30</td>
+                        <td><span style="color: green;">✔ Sucesso</span></td>
+                    </tr>
+                    <tr>
+                        <td>CRM</td>
+                        <td>Transacional</td>
+                        <td>Semanal</td>
+                        <td>20/06/2023 22:45</td>
+                        <td><span style="color: green;">✔ Sucesso</span></td>
+                    </tr>
+                    <tr>
+                        <td>Planilhas de RH</td>
+                        <td>Arquivo</td>
+                        <td>Mensal</td>
+                        <td>05/06/2023 01:00</td>
+                        <td><span style="color: orange;">⚠ Aviso</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">Fluxo de Dados Corporativos</div>
+            <div class="data-flow">
+                <div class="flow-diagram">
+                    <div class="flow-source">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1086/1086741.png" alt="Sistemas Transacionais">
+                        <div>Sistemas Transacionais</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-target">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1925/1925158.png" alt="ETL">
+                        <div>Processo ETL</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-target">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1925/1925163.png" alt="Data Warehouse">
+                        <div>Data Warehouse</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-target">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1925/1925194.png" alt="BI">
+                        <div>Ferramentas de BI</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

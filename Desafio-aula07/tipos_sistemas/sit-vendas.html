@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIT - Sistema de Vendas Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .product {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .product-info {
+            flex: 1;
+        }
+        .product-actions {
+            display: flex;
+            align-items: center;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .cart {
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 10px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Vendas Online (SIT)</h1>
+        
+        <h2>Produtos Disponíveis</h2>
+        
+        <div class="product">
+            <div class="product-info">
+                <h3>Notebook Dell Inspiron</h3>
+                <p>R$ 3.499,00</p>
+            </div>
+            <div class="product-actions">
+                <input type="number" id="qty-1" min="1" value="1" style="width: 50px;">
+                <button onclick="addToCart(1, 'Notebook Dell Inspiron', 3499)">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+        
+        <div class="product">
+            <div class="product-info">
+                <h3>Smartphone Samsung Galaxy S21</h3>
+                <p>R$ 4.199,00</p>
+            </div>
+            <div class="product-actions">
+                <input type="number" id="qty-2" min="1" value="1" style="width: 50px;">
+                <button onclick="addToCart(2, 'Smartphone Samsung Galaxy S21', 4199)">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+        
+        <div class="product">
+            <div class="product-info">
+                <h3>Fone de Ouvido Bluetooth</h3>
+                <p>R$ 299,00</p>
+            </div>
+            <div class="product-actions">
+                <input type="number" id="qty-3" min="1" value="1" style="width: 50px;">
+                <button onclick="addToCart(3, 'Fone de Ouvido Bluetooth', 299)">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+        
+        <div class="cart">
+            <h2>Carrinho de Compras</h2>
+            <div id="cart-items"></div>
+            <div class="total">Total: R$ <span id="cart-total">0,00</span></div>
+            <button onclick="checkout()" style="margin-top: 15px; width: 100%; padding: 12px;">Finalizar Compra</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        
+        function addToCart(id, name, price) {
+            const quantity = parseInt(document.getElementById(`qty-${id}`).value);
+            const existingItem = cart.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ id, name, price, quantity });
+            }
+            
+            updateCart();
+        }
+        
+        function updateCart() {
+            const cartItemsElement = document.getElementById('cart-items');
+            cartItemsElement.innerHTML = '';
+            
+            let total = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <span>${item.name} (${item.quantity}x)</span>
+                    <span>R$ ${itemTotal.toFixed(2)}</span>
+                `;
+                
+                cartItemsElement.appendChild(itemElement);
+            });
+            
+            document.getElementById('cart-total').textContent = total.toFixed(2);
+            
+            // Salvar carrinho no localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+        
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Seu carrinho está vazio!');
+                return;
+            }
+            
+            alert(`Compra finalizada com sucesso! Total: R$ ${document.getElementById('cart-total').textContent}`);
+            
+            // Simular envio para o servidor
+            console.log('Dados da compra enviados:', cart);
+            
+            // Limpar carrinho
+            cart = [];
+            updateCart();
+            localStorage.removeItem('cart');
+        }
+        
+        // Carregar carrinho do localStorage ao iniciar
+        window.onload = function() {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCart();
+            }
+        };
+    </script>
+</body>
+</html>

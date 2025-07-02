@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP - Sistema Integrado</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .erp-nav {
+            display: flex;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .erp-nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        .erp-nav-item:hover {
+            background-color: var(--light);
+        }
+        .erp-nav-item.active {
+            border-bottom: 3px solid var(--primary);
+            font-weight: bold;
+        }
+        .erp-content {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .erp-content.active {
+            display: block;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .kpi {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .kpi.positive {
+            color: var(--success);
+        }
+        .kpi.negative {
+            color: var(--danger);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: var(--light);
+            color: var(--secondary);
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .status.success {
+            background-color: #d5f5e3;
+            color: var(--success);
+        }
+        .status.warning {
+            background-color: #fdebd0;
+            color: var(--warning);
+        }
+        .status.danger {
+            background-color: #fadbd8;
+            color: var(--danger);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            background-color: var(--light);
+            border-left: 4px solid var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L3 7L12 12L21 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 17L12 22L21 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 12L12 17L21 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                ERP Empresarial - Sistema Integrado
+            </h1>
+        </header>
+        
+        <div class="erp-nav">
+            <div class="erp-nav-item active" data-tab="dashboard">Dashboard</div>
+            <div class="erp-nav-item" data-tab="vendas">Vendas</div>
+            <div class="erp-nav-item" data-tab="estoque">Estoque</div>
+            <div class="erp-nav-item" data-tab="financeiro">Financeiro</div>
+            <div class="erp-nav-item" data-tab="rh">RH</div>
+        </div>
+        
+        <!-- Dashboard -->
+        <div class="erp-content active" id="dashboard">
+            <div class="alert">
+                Bem-vindo ao sistema ERP integrado. Aqui você tem uma visão unificada de todas as áreas da empresa.
+            </div>
+            
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        Vendas do Mês
+                        <span>Jun/2023</span>
+                    </div>
+                    <div class="kpi positive" id="sales-kpi">R$ 0,00</div>
+                    <div style="text-align: center; color: var(--success);">↑ 12% vs mês anterior</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Itens em Estoque
+                        <span>Crítico</span>
+                    </div>
+                    <div class="kpi negative" id="stock-kpi">0</div>
+                    <div style="text-align: center; color: var(--danger);">5 itens abaixo do mínimo</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Folha de Pagamento
+                        <span>Próximo venc.</span>
+                    </div>
+                    <div class="kpi" id="payroll-kpi">R$ 0,00</div>
+                    <div style="text-align: center;">Dia 05/07</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    Últimos Pedidos
+                    <button>Ver Todos</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nº Pedido</th>
+                            <th>Cliente</th>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-orders">
+                        <!-- Preenchido por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Módulo de Vendas -->
+        <div class="erp-content" id="vendas">
+            <div class="card">
+                <div class="card-header">
+                    Gestão de Vendas
+                    <button id="new-sale">+ Novo Pedido</button>
+                </div>
+                
+                <div id="sales-list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nº Pedido</th>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-table-body">
+                            <!-- Preenchido por JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="sales-form" style="display: none;">
+                    <h3>Novo Pedido de Venda</h3>
+                    <div class="form-group">
+                        <label for="client">Cliente</label>
+                        <select id="client">
+                            <option value="">Selecione um cliente</option>
+                            <option value="1">Empresa A Ltda</option>
+                            <option value="2">Empresa B S/A</option>
+                            <option value="3">Empresa C ME</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product">Produto</label>
+                        <select id="product">
+                            <option value="">Selecione um produto</option>
+                            <option value="1">Notebook Dell Inspiron</option>
+                            <option value="2">Smartphone Samsung Galaxy</option>
+                            <option value="3">Monitor LG 24"</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantity">Quantidade</label>
+                        <input type="number" id="quantity" min="1" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="price">Preço Unitário</label>
+                        <input type="text" id="price" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="total">Total</label>
+                        <input type="text" id="total" readonly>
+                    </div>
+                    
+                    <button id="save-sale">Salvar Pedido</button>
+                    <button id="cancel-sale" style="background-color: var(--danger);">Cancelar</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Módulo de Estoque -->
+        <div class="erp-content" id="estoque">
+            <div class="card">
+                <div class="card-header">
+                    Gestão de Estoque
+                    <button id="new-product">+ Novo Produto</button>
+                </div>
+                
+                <div id="inventory-list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Produto</th>
+                                <th>Estoque Atual</th>
+                                <th>Estoque Mínimo</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body">
+                            <!-- Preenchido por JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="inventory-form" style="display: none;">
+                    <h3>Cadastro de Produto</h3>
+                    <div class="form-group">
+                        <label for="product-code">Código</label>
+                        <input type="text" id="product-code">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-name">Nome do Produto</label>
+                        <input type="text" id="product-name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-description">Descrição</label>
+                        <input type="text" id="product-description">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="current-stock">Estoque Atual</label>
+                        <input type="number" id="current-stock" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="min-stock">Estoque Mínimo</label>
+                        <input type="number" id="min-stock" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-price">Preço</label>
+                        <input type="text" id="product-price">
+                    </div>
+                    
+                    <button id="save-product">Salvar Produto</button>
+                    <button id="cancel-product" style="background-color: var(--danger);">Cancelar</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Módulo Financeiro -->
+        <div class="erp-content" id="financeiro">
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        Recebimentos
+                        <span>Últimos 30 dias</span>
+                    </div>
+                    <div class="kpi positive" id="receivables-kpi">R$ 0,00</div>
+                    <div style="text-align: center;">5 contas a receber</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Pagamentos
+                        <span>Próximos 7 dias</span>
+                    </div>
+                    <div class="kpi negative" id="payables-kpi">R$ 0,00</div>
+                    <div style="text-align: center;">3 contas a pagar</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Fluxo de Caixa
+                        <span>Mensal</span>
+                    </div>
+                    <div class="kpi" id="cashflow-kpi">R$ 0,00</div>
+                    <div style="text-align: center;">Saldo atual</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    Contas a Pagar
+                    <button>Ver Todas</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Fornecedor</th>
+                            <th>Vencimento</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payables-table">
+                        <!-- Preenchido por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Módulo de RH -->
+        <div class="erp-content" id="rh">
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        Funcionários
+                        <span>Total</span>
+                    </div>
+                    <div class="kpi" id="employees-kpi">0</div>
+                    <div style="text-align: center;">5 ativos este mês</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Férias
+                        <span>Próximas</span>
+                    </div>
+                    <div class="kpi warning" id="vacations-kpi">0</div>
+                    <div style="text-align: center;">3 agendadas</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Folha
+                        <span>Última</span>
+                    </div>
+                    <div class="kpi" id="last-payroll-kpi">R$ 0,00</div>
+                    <div style="text-align: center;">Processada em 05/06</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    Últimos Contratos
+                    <button>Ver Todos</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Funcionário</th>
+                            <th>Cargo</th>
+                            <th>Admissão</th>
+                            <th>Salário</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employees-table">
+                        <!-- Preenchido por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados simulados
+        const recentOrders = [
+            { id: 1001, client: 'Empresa A Ltda', date: '25/06/2023', value: 4599.00, status: 'Faturado' },
+            { id: 1002, client: 'Empresa B S/A', date: '24/06/2023', value: 1299.00, status: 'Enviado' },
+            { id: 1003, client: 'Empresa C ME', date: '23/06/2023', value: 3599.00, status: 'Processando' },
+            { id: 1004, client: 'Empresa D EPP', date: '20/06/2023', value: 899.00, status: 'Faturado' }
+        ];
+        
+        const sales = [
+            { id: 1001, client: 'Empresa A Ltda', date: '25/06/2023', value: 4599.00, status: 'Faturado' },
+            { id: 1002, client: 'Empresa B S/A', date: '24/06/2023', value: 1299.00, status: 'Enviado' },
+            { id: 1003, client: 'Empresa C ME', date: '23/06/2023', value: 3599.00, status: 'Processando' },
+            { id: 1004, client: 'Empresa D EPP', date: '20/06/2023', value: 899.00, status: 'Faturado' },
+            { id: 1005, client: 'Empresa E Ltda', date: '18/06/2023', value: 2299.00, status: 'Cancelado' }
+        ];
+        
+        const inventory = [
+            { code: 'P001', name: 'Notebook Dell Inspiron', current: 15, min: 10, status: 'OK' },
+            { code: 'P002', name: 'Smartphone Samsung Galaxy', current: 8, min: 15, status: 'Crítico' },
+            { code: 'P003', name: 'Monitor LG 24"', current: 12, min: 5, status: 'OK' },
+            { code: 'P004', name: 'Teclado Mecânico', current: 3, min: 10, status: 'Crítico' },
+            { code: 'P005', name: 'Mouse Sem Fio', current: 20, min: 15, status: 'OK' }
+        ];
+        
+        const payables = [
+            { description: 'Aluguel', supplier: 'Imobiliária XYZ', due: '05/07/2023', value: 3500.00, status: 'Pendente' },
+            { description: 'Energia', supplier: 'Light', due: '08/07/2023', value: 850.00, status: 'Pendente' },
+            { description: 'Internet', supplier: 'Vivo', due: '10/07/2023', value: 299.00, status: 'Pendente' }
+        ];
+        
+        const employees = [
+            { name: 'João Silva', position: 'Analista de Vendas', admission: '15/03/2021', salary: 4500.00, status: 'Ativo' },
+            { name: 'Maria Santos', position: 'Gerente Financeiro', admission: '22/08/2020', salary: 8500.00, status: 'Ativo' },
+            { name: 'Carlos Oliveira', position: 'Desenvolvedor', admission: '10/01/2022', salary: 6500.00, status: 'Ativo' },
+            { name: 'Ana Pereira', position: 'Analista de RH', admission: '05/05/2023', salary: 3800.00, status: 'Experiência' }
+        ];
+        
+        // Preencher dados iniciais
+        function fillInitialData() {
+            // Dashboard
+            document.getElementById('sales-kpi').textContent = 'R$ 24.495,00';
+            document.getElementById('stock-kpi').textContent = '58';
+            document.getElementById('payroll-kpi').textContent = 'R$ 23.300,00';
+            
+            // Recent Orders
+            const recentOrdersBody = document.getElementById('recent-orders');
+            recentOrders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.client}</td>
+                    <td>${order.date}</td>
+                    <td>R$ ${order.value.toFixed(2)}</td>
+                    <td><span class="status ${getStatusClass(order.status)}">${order.status}</span></td>
+                `;
+                recentOrdersBody.appendChild(row);
+            });
+            
+            // Vendas
+            const salesBody = document.getElementById('sales-table-body');
+            sales.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.id}</td>
+                    <td>${sale.client}</td>
+                    <td>${sale.date}</td>
+                    <td>R$ ${sale.value.toFixed(2)}</td>
+                    <td><span class="status ${getStatusClass(sale.status)}">${sale.status}</span></td>
+                    <td>
+                        <button style="padding: 5px 10px; font-size: 0.8em;">Editar</button>
+                    </td>
+                `;
+                salesBody.appendChild(row);
+            });
+            
+            // Estoque
+            const inventoryBody = document.getElementById('inventory-table-body');
+            inventory.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.code}</td>
+                    <td>${item.name}</td>
+                    <td>${item.current}</td>
+                    <td>${item.min}</td>
+                    <td><span class="status ${getStatusClass(item.status)}">${item.status}</span></td>
+                    <td>
+                        <button style="padding: 5px 10px; font-size: 0.8em;">Editar</button>
+                    </td>
+                `;
+                inventoryBody.appendChild(row);
+            });
+            
+            // Financeiro
+            document.getElementById('receivables-kpi').textContent = 'R$ 10.295,00';
+            document.getElementById('payables-kpi').textContent = 'R$ 4.649,00';
+            document.getElementById('cashflow-kpi').textContent = 'R$ 15.846,00';
+            
+            const payablesBody = document.getElementById('payables-table');
+            payables.forEach(payable => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payable.description}</td>
+                    <td>${payable.supplier}</td>
+                    <td>${payable.due}</td>
+                    <td>R$ ${payable.value.toFixed(2)}</td>
+                    <td><span class="status ${getStatusClass(payable.status)}">${payable.status}</span></td>
+                `;
+                payablesBody.appendChild(row);
+            });
+            
+            // RH
+            document.getElementById('employees-kpi').textContent = '24';
+            document.getElementById('vacations-kpi').textContent = '3';
+            document.getElementById('last-payroll-kpi').textContent = 'R$ 123.500,00';
+            
+            const employeesBody = document.getElementById('employees-table');
+            employees.forEach(employee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${employee.name}</td>
+                    <td>${employee.position}</td>
+                    <td>${employee.admission}</td>
+                    <td>R$ ${employee.salary.toFixed(2)}</td>
+                    <td><span class="status ${getStatusClass(employee.status)}">${employee.status}</span></td>
+                `;
+                employeesBody.appendChild(row);
+            });
+        }
+        
+        function getStatusClass(status) {
+            switch(status.toLowerCase()) {
+                case 'faturado':
+                case 'enviado':
+                case 'ok':
+                case 'ativo':
+                    return 'success';
+                case 'processando':
+                case 'experiência':
+                    return 'warning';
+                case 'cancelado':
+                case 'crítico':
+                case 'pendente':
+                    return 'danger';
+                default:
+                    return '';
+            }
+        }
+        
+        // Navegação entre abas
+        document.querySelectorAll('.erp-nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remover classe active de todos
+                document.querySelectorAll('.erp-nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                
+                // Adicionar classe active ao item clicado
+                this.classList.add('active');
+                
+                // Esconder todos os conteúdos
+                document.querySelectorAll('.erp-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Mostrar conteúdo correspondente
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Formulário de vendas
+        document.getElementById('new-sale').addEventListener('click', function() {
+            document.getElementById('sales-list').style.display = 'none';
+            document.getElementById('sales-form').style.display = 'block';
+        });
+        
+        document.getElementById('cancel-sale').addEventListener('click', function() {
+            document.getElementById('sales-list').style.display = 'block';
+            document.getElementById('sales-form').style.display = 'none';
+        });
+        
+        // Formulário de estoque
+        document.getElementById('new-product').addEventListener('click', function() {
+            document.getElementById('inventory-list').style.display = 'none';
+            document.getElementById('inventory-form').style.display = 'block';
+        });
+        
+        document.getElementById('cancel-product').addEventListener('click', function() {
+            document.getElementById('inventory-list').style.display = 'block';
+            document.getElementById('inventory-form').style.display = 'none';
+        });
+        
+        // Carregar dados iniciais
+        window.onload = fillInitialData;
+    </script>
+</body>
+</html>

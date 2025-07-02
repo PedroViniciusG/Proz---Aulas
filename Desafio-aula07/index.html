@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portal completo sobre Sistemas de Informação - Tipos, Sistemas Empresariais e Ferramentas de Apoio">
+  <title>Portal de Sistemas de Informação | Guia Completo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cor-primaria: #2c3e50;
+      --cor-secundaria: #ecf0f1;
+      --cor-destaque: #3498db;
+      --cor-texto: #34495e;
+      --cor-texto-claro: #7f8c8d;
+      --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --borda-radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.6;
+      background-color: var(--cor-secundaria);
+      color: var(--cor-texto);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background-color: var(--cor-primaria);
+      color: white;
+      padding: 40px 0;
+      text-align: center;
+      background-image: linear-gradient(135deg, var(--cor-primaria) 0%, #3498db 100%);
+    }
+
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      margin: 0 0 15px 0;
+      font-size: 2.5em;
+      font-weight: 700;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.2em;
+      font-weight: 300;
+      opacity: 0.9;
+    }
+
+    main {
+      padding: 40px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: var(--borda-radius);
+      box-shadow: var(--sombra);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: var(--cor-primaria);
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-weight: 500;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 50px;
+      height: 3px;
+      background-color: var(--cor-destaque);
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    ul li {
+      margin-bottom: 12px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--cor-destaque);
+    }
+
+    a {
+      color: var(--cor-destaque);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--cor-primaria);
+      text-decoration: underline;
+    }
+
+    .form-section {
+      background: white;
+      padding: 30px;
+      border-radius: var(--borda-radius);
+      box-shadow: var(--sombra);
+      margin-top: 40px;
+    }
+
+    .form-section p {
+      color: var(--cor-texto-claro);
+      margin-bottom: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: var(--borda-radius);
+      margin-top: 20px;
+    }
+
+    footer {
+      background-color: var(--cor-primaria);
+      color: white;
+      text-align: center;
+      padding: 30px 0;
+      margin-top: 40px;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    footer p {
+      margin: 5px 0;
+      opacity: 0.8;
+      font-size: 0.9em;
+    }
+
+    .copyright {
+      margin-top: 15px;
+      font-size: 0.8em;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 2em;
+      }
+
+      header p {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <h1>Sistemas de Informação Empresarial</h1>
+      <p>Conheça os principais tipos, ferramentas e aplicações na gestão organizacional</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="grid">
+      <section class="card">
+        <h2>Tipos de Sistemas de Informação</h2>
+        <ul>
+          <li><a href="tipos_sistemas/sit-vendas.html" target="_blank">SIT - Sistema de Informação Transacional</a></li>
+          <li><a href="tipos_sistemas/sig-relatorios.html" target="_blank">SIG - Sistema de Informação Gerencial</a></li>
+          <li><a href="tipos_sistemas/sad-bi.html" target="_blank">SAD - Sistema de Apoio à Decisão</a></li>
+          <li><a href="tipos_sistemas/sie-dashboard.html" target="_blank">SIE - Sistema de Informação Executivo</a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Sistemas Empresariais (PEAS)</h2>
+        <ul>
+          <li><a href="sistemas_emp/erp-sistema.html" target="_blank">ERP - Planejamento de Recursos Empresariais</a></li>
+          <li><a href="sistemas_emp/crm-clientes.html" target="_blank">CRM - Gestão de Relacionamento com Clientes</a></li>
+          <li><a href="sistemas_emp/scm-suprimentos.html" target="_blank">SCM - Gestão da Cadeia de Suprimentos</a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Ferramentas de Apoio</h2>
+        <ul>
+          <li><a href="ferramentas_apoio/data-warehouse.html" target="_blank">Data Warehouse - Armazenamento de Dados</a></li>
+          <li><a href="ferramentas_apoio/data-mining.html" target="_blank">Data Mining - Mineração de Dados</a></li>
+          <li><a href="ferramentas_apoio/business-intelligence.html" target="_blank">Business Intelligence - Inteligência Empresarial</a></li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="form-section">
+      <h2>Pesquisa sobre Sistemas de Informação</h2>
+      <p>Participe da nossa pesquisa e contribua para o entendimento do uso de SI nas organizações</p>
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdbeKfJ6oagYNaWEV2kRBT91MF0xknyu6qGG-xp6IVMHw-Tzg/viewform?usp=dialog" title="Formulário de Pesquisa sobre Sistemas de Informação">Carregando…</iframe>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>Portal de Sistemas de Informação</p>
+      <p>Recursos educacionais para profissionais e estudantes</p>
+      <p class="copyright">© 2023 Todos os direitos reservados</p>
+    </div>
+  </footer>
+
+</body>
+</html>
